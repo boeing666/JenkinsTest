@@ -102,5 +102,10 @@ resource "docker_container" "jenkins" {
 }
 
 ````
-Y para añadirlo ````git add Despliegues.tf````  
-Para comprobarlo ````git status````
+
+## 6) Subir el despliegue al repositorio  
+
+- Para añadirlo ````git add Despliegues.tf````  
+- Para comprobarlo ````git status````
+- Para poder hacer el commit debo identificarme ````git config --global user.name "Tu Nombre"```` y ````git config --global user.email "tuemail@example.com"````
+- Para hacer el commit ````git commit -m "Añadido archivo Despliegues.tf con configuración de Terraform"````
