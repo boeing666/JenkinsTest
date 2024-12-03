@@ -109,3 +109,6 @@ resource "docker_container" "jenkins" {
 - Para comprobarlo ````git status````
 - Para poder hacer el commit debo identificarme ````git config --global user.name "Tu Nombre"```` y ````git config --global user.email "tuemail@example.com"````
 - Para hacer el commit ````git commit -m "Añadido archivo Despliegues.tf con configuración de Terraform"````
+- Para hacer el push ````git push origin master````
+
+  
