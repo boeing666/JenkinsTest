@@ -1,9 +1,8 @@
 # Instrucciones
 
-## 1) Instalar Docker y Git
+## 1) Instalar Docker, Git y Terraform
 
-Verificar ````docker --version```` y ````git --version````
-
+Verificar ````docker --version```` , ````git --version```` y ````terraform --version````
 
 
 ## 2) Creación imagen de Jenkins usando Dockerfile
