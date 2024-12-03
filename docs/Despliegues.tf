@@ -25,10 +25,10 @@ resource "docker_container" "jenkins_dind" {
     name    = docker_network.jenkins_network.name
     aliases = ["dind"]
   }
-  env = {
+  env = [
     # Habilitamos TLS para seguridad
-    DOCKER_TLS_CERTDIR = "/certs"
-  }
+    "DOCKER_TLS_CERTDIR=/certs"
+  ]
   ports {
     # El puerto 2376 es el puerto estándar utilizado por Docker para habilitar comunicación segura mediante TLS 
     internal = 2376
@@ -44,14 +44,14 @@ resource "docker_container" "jenkins" {
     name    = docker_network.jenkins_network.name
     aliases = ["jenkins"]
   }
-  env = {
+  env = [
     # Define la dirección del servidor Docker con el que Jenkins se conectará.
-    DOCKER_HOST       = "tcp://dind:2376"
+    "DOCKER_HOST=tcp://dind:2376",
     # Especifica la ruta en el contenedor donde están almacenados los certificados TLS necesarios para la autenticación segura.
-    DOCKER_CERT_PATH  = "/certs/client"
+    "DOCKER_CERT_PATH=/certs/client",
     # Habilita la verificación TLS para asegurar que la comunicación entre Jenkins y jenkins-dind sea cifrada y autenticada.
-    DOCKER_TLS_VERIFY = "1"
-  }
+    "DOCKER_TLS_VERIFY=1"
+  ]
   ports {
     # Permite acceder a la interfaz de Jenkins desde el navegador
     internal = 8080
@@ -63,3 +63,4 @@ resource "docker_container" "jenkins" {
     external = 50000
   }
 }
+
