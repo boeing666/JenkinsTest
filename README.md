@@ -1,8 +1,9 @@
 # Instrucciones
 
-## 1) Instalar Docker 
+## 1) Instalar Docker y Git
 
-Verificar ````docker --version````
+Verificar ````docker --version```` y ````git --version````
+
 
 
 ## 2) Creación imagen de Jenkins usando Dockerfile
