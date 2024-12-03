@@ -23,3 +23,11 @@ Verificar ````docker --version```` y ````git --version````
  RUN jenkins-plugin-cli --plugins "blueocean docker-workflow token-macro json-path-api"
 ````
 
+## 3) Clonar repositorio
+
+````git clone https://github.com/SrNaggets/simple-python-pyinstaller-app````
+
+## 4) Construir la imagen en la carpeta simple-python-pyinstaller-app/docs
+
+````docker build -t myjenkins-blueocean````   
+Para verificar ````docker images````
