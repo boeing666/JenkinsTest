@@ -18,8 +18,11 @@ node {
     }
 
     stage('Deploy') {
-        docker.image('cdrx/pyinstaller-linux:python2').inside('-p 3000:3000') {
+        docker.image('python:latest').inside('-u root') {
+            sh 'pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
+            sleep time:1, unit: 'MINUTES'
+            echo 'Pipeline has finished succesfully.'
         }
 
         success {
