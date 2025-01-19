@@ -24,9 +24,7 @@ node {
             sleep time:1, unit: 'MINUTES'
             echo 'Pipeline has finished succesfully.'
         }
-
-        success {
-            archiveArtifacts 'dist/add2vals'
-        }
+        
+        archiveArtifacts 'dist/add2vals'
     }
 }
