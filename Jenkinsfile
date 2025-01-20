@@ -21,10 +21,11 @@ node {
         docker.image('python:latest').inside('-u root') {
             sh 'pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
-            sleep time:1, unit: 'MINUTES'
-            echo 'Pipeline has finished succesfully.'
         }
         
         archiveArtifacts 'dist/add2vals'
+        
+        echo 'Pipeline has finished succesfully.'
+        sleep time:1, unit: 'MINUTES'
     }
 }
