@@ -25,6 +25,22 @@ node {
         
         archiveArtifacts 'dist/add2vals'
         
+	# Create a Dockerfile
+
+	sh '''
+	echo "FROM ubuntu" > Dockerfile
+	echo "WORKDIR /usr/local/bin" >> Dockerfile
+	echo "COPY dist/add2vals /usr/local/bin/add2vals" >> Dockerfile
+	echo "RUN chmod +x /usr/local/bin/add2vals" >> Dockerfile
+	echo "ENTRYPOINT [\"/usr/local/bin/add2vals\"]" >> Dockerfile
+	'''
+
+	# Build add2vals-image
+
+	sh "docker build -t add2vals-image:latest ."
+	
+	archiveArtifacts 'dist/add2vals-image'
+
         echo 'Pipeline has finished succesfully.'
         sleep time:1, unit: 'MINUTES'
     }
