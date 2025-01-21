@@ -41,7 +41,7 @@ node {
 	
 	// Push image into docker registry
 	
-	def DOCKER_REPO = 'app2vals-repo'
+	def DOCKER_REPO = 'add2vals-repo'
 	def DOCKER_TAG = 'latest'
 
 	withCredentials([usernamePassword(credentialsId: 'docker-credentials',
@@ -50,8 +50,8 @@ node {
 			sh '''
 			echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 			'''
-			sh 'docker tag add2vals-image:latest $DOCKER_USERNAME/app2vals-repo:latest'
-			sh 'docker push $DOCKER_USERNAME/app2vals-repo:latest'
+			sh 'docker tag add2vals-image:latest $DOCKER_USERNAME/add2vals-repo:latest'
+			sh 'docker push $DOCKER_USERNAME/add2vals-repo:latest'
 	}
 
         echo 'Pipeline has finished succesfully.'
