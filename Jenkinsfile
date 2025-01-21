@@ -1,6 +1,6 @@
 node {
     stage('Build') {
-        docker.image('python').inside() {
+        docker.image('python:latest').inside() {
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
         }
     }
@@ -18,7 +18,7 @@ node {
     }
 
     stage('Deploy') {
-        docker.image('python').inside('-u root') {
+        docker.image('python:latest').inside('-u root') {
             sh 'pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
         }
