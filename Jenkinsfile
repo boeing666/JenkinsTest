@@ -25,7 +25,7 @@ node {
         
         archiveArtifacts 'dist/add2vals'
         
-	# Create a Dockerfile
+	// Create a Dockerfile
 
 	sh '''
 	echo "FROM ubuntu" > Dockerfile
@@ -35,7 +35,7 @@ node {
 	echo "ENTRYPOINT [\"/usr/local/bin/add2vals\"]" >> Dockerfile
 	'''
 
-	# Build add2vals-image
+	// Build add2vals-image
 
 	sh "docker build -t add2vals-image:latest ."
 	
