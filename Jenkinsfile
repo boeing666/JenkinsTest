@@ -39,7 +39,19 @@ node {
 
 	sh "docker build -t add2vals-image:latest ."
 	
-	archiveArtifacts 'dist/add2vals-image'
+	// Push image into docker registry
+	
+	def DOCKER_REPO = 'app2vals-repo'
+	def DOCKER_TAG = 'latest'
+
+	withCredentials([usernamePassword(credentialsId: 'docker-credentials',
+		usernameVariable: 'DOCKER_USERNAME',
+		passwordVariable: 'DOCKER_PASSWORD')]) {
+			sh '''
+			echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+			'''
+			sh 'docker push $DOCKER_USERNAME/$DOCKER_REPO:$DOCKER_TAG'
+	}
 
         echo 'Pipeline has finished succesfully.'
         sleep time:1, unit: 'MINUTES'
