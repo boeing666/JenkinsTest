@@ -18,7 +18,7 @@ node {
     }
 
     stage('Deploy') {
-        docker.image('python:latest').inside('-u root') {
+        docker.image('python:2-alpine').inside('-u root') {
             sh 'pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
         }
