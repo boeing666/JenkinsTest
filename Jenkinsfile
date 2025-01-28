@@ -38,10 +38,6 @@ node {
 	// Build add2vals-image
 
 	sh "docker build -t add2vals-image:latest ."
-	
-	// Remove unused add2vals artifact
-	
-	sh "sudo rm -rf dist/add2vals"
 
 	// Push image into docker registry
 	
