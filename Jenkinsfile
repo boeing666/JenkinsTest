@@ -39,6 +39,10 @@ node {
 
 	sh "docker build -t add2vals-image:latest ."
 	
+	// Remove unused add2vals artifact
+
+	sh "rm -rf dist/add2vals"
+
 	// Push image into docker registry
 	
 	def DOCKER_REPO = 'add2vals-repo'
