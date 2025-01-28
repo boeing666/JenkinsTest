@@ -40,7 +40,8 @@ node {
 	sh "docker build -t add2vals-image:latest ."
 	
 	// Remove unused add2vals artifact
-
+	
+	sh "ls -l dist/add2vals"
 	sh "chmod +w dist/add2vals"
 	sh "rm -rf dist/add2vals"
 
