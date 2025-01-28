@@ -41,9 +41,7 @@ node {
 	
 	// Remove unused add2vals artifact
 	
-	sh "ls -l dist/add2vals"
-	sh "chmod +w dist/add2vals"
-	sh "rm -rf dist/add2vals"
+	sh "sudo rm -rf dist/add2vals"
 
 	// Push image into docker registry
 	
