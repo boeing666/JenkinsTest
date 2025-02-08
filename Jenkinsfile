@@ -50,7 +50,7 @@ node {
 			sh '''
 			echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 			'''
-			sh 'docker tag add2vals-image:latest $DOCKER_USERNAME/add2vals-repo:latest'
+			// sh 'docker tag add2vals-image:latest $DOCKER_USERNAME/add2vals-repo:latest'
 			sh 'docker push $DOCKER_USERNAME/add2vals-repo:latest'
 	}
 
