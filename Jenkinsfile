@@ -51,7 +51,7 @@ node {
 			echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 			'''
 			// sh 'docker tag add2vals-image:latest $DOCKER_USERNAME/add2vals-repo:latest'
-			sh 'docker push $DOCKER_USERNAME/${env.DOCKER_REPO}:${env.DOCKER_TAG}'
+			sh 'docker push $DOCKER_USERNAME/${DOCKER_REPO}:${DOCKER_TAG}'
 	}
 
         echo 'Pipeline has finished succesfully.'
