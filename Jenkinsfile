@@ -65,7 +65,7 @@ node {
                           "type": "web_service",
                           "imagePath": "{env.DOCKER_USERNAME}/${DOCKER_REPO}:${DOCKER_TAG}",
 			  "region": "${RENDER_REGION}",
-			  "instanceSize": "${RENDER_INSTANCE}",
+			  "plan": "${RENDER_INSTANCE}",
 			  "numInstances": 1
 			}
 			"""
@@ -73,7 +73,7 @@ node {
 			writeFile file: 'render-payload.json', text: RENDER_PAYLOAD
 
 			sh '''
-			curl -f -X POST "https://api.render.com/v1/services" \
+			curl -X POST "https://api.render.com/v1/services" \
 			     -H "Accept: application/json" \
 			     -H "Content-Type: application/json" \
 			     -H "Authorization: Bearer $RENDER_API_KEY" \
