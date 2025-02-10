@@ -40,21 +40,45 @@ node {
 
 	sh "docker build -t add2vals-image:latest ."
 
-	// Push image into docker registry
+	// Push image into docker registry and upload it to Render
 
 	withCredentials([usernamePassword(credentialsId: 'docker-credentials',
 		usernameVariable: 'DOCKER_USERNAME',
-		passwordVariable: 'DOCKER_PASSWORD')]) {
+		passwordVariable: 'DOCKER_PASSWORD'),
+			 string(credentialsId: 'render-api-key',
+		variable: 'RENDER_API_KEY')]) {
 			def DOCKER_REPO = 'add2vals-repo'
 			def DOCKER_TAG = 'latest'
-        
-			echo "docker-repo: ${DOCKER_REPO}"
-			echo "docker-tag: ${DOCKER_TAG}" 
+			def RENDER_REGION = 'oregon'
+			def RENDER_INSTANCE = 'free'
+			def RENDER_SERVICE_NAME = "render-service-${env.BUILD_NUMBER}"
+ 
 			sh '''
 			echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
 			'''
-			// sh 'docker tag add2vals-image:latest $DOCKER_USERNAME/add2vals-repo:latest'
+			
 			sh "docker push ${env.DOCKER_USERNAME}/${DOCKER_REPO}:${DOCKER_TAG}"
+
+			def RENDER_PAYLOAD = """
+                        {
+                          "name": "${RENDER_SERVICE_NAME}",
+                          "type": "web_service",
+                          "imagePath": "{env.DOCKER_USERNAME}/${DOCKER_REPO}:${DOCKER_TAG}",
+			  "region": "${RENDER_REGION}",
+			  "instanceSize": "${RENDER_INSTANCE}",
+			  "numInstances": 1
+			}
+			"""
+
+			writeFile file: 'render-payload.json', text: RENDER_PAYLOAD
+
+			sh '''
+			curl -f -X POST "https://api.render.com/v1/services" \
+			     -H "Accept: application/json" \
+			     -H "Content-Type: application/json" \
+			     -H "Authorization: Bearer $RENDER_API_KEY" \
+			     -d @render-payload.json
+			''' 
 	}
 
         echo 'Pipeline has finished succesfully.'
