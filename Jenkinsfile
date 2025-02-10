@@ -46,7 +46,9 @@ node {
 		usernameVariable: 'DOCKER_USERNAME',
 		passwordVariable: 'DOCKER_PASSWORD'),
 			 string(credentialsId: 'render-api-key',
-		variable: 'RENDER_API_KEY')]) {
+		variable: 'RENDER_API_KEY'),
+			 string(credentialsId: 'render-owner-id',
+		variable: 'RENDER_OWNER_ID')]) {
 			def DOCKER_REPO = 'add2vals-repo'
 			def DOCKER_TAG = 'latest'
 			def RENDER_REGION = 'oregon'
@@ -66,6 +68,7 @@ node {
                           "imagePath": "{env.DOCKER_USERNAME}/${DOCKER_REPO}:${DOCKER_TAG}",
 			  "region": "${RENDER_REGION}",
 			  "plan": "${RENDER_INSTANCE}",
+			  "ownerId": "${env.RENDER_OWNER_ID}
 			  "numInstances": 1
 			}
 			"""
