@@ -12,7 +12,10 @@ signed-by=/usr/share/keyrings/docker-archive-keyring.asc] \
 https://download.docker.com/linux/debian \
 $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
 
-RUN apt-get update && apt-get install -y docker-ce-cli
+RUN apt-get update && \
+    apt-get install -y docker-ce-cli python2 python2-dev python-pip && \
+    ln -s /usr/bin/python2 /usr/bin/python && \
+    pip install --no-cache-dir pyinstaller
 
 USER jenkins
 
