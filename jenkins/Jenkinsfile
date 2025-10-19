@@ -1,59 +1,63 @@
 pipeline {
-    agent {docker { image 'python:3.13.7-alpine3.22' }}
+  agent {
+    docker { image 'python:3.13.7-alpine3.22' }
+  }
 
-    options {
-        skipStagesAfterUnstable() // Опция `skipStagesAfterUnstable()` гарантирует, что если статус сборки станет "Нестабильным" (UNSTABLE), последующие этапы будут пропущены. Это предотвращает выполнение этапа доставки, если тесты прошли неудачно.
+  options {
+    skipStagesAfterUnstable()
+  }
+
+  stages {
+    stage('Setup') {
+      steps {
+        sh '''
+          set -eu
+          python -m venv venv
+          . venv/bin/activate
+          pip install -r requirements.txt
+          mkdir -p test-reports
+        '''
+      }
     }
-  
-    stages {
-        stage('setup') {
-            steps {
-              // открываем виртуальное окружение для Python, это нужно чтобы был доступ сохранить зависимости из файла requirements.txt
-              sh '''
-              python -m venv venv
-              . venv/bin/activate 
-              pip install -r requirements.txt
-              '''
-          }
-          
-          stage('Build') {
-              steps {
-                  sh '''
-                  . venv/bin/activate
-                  python -m py_compile sources/add2vals.py sources/calc.py
-                  ''' // Этот шаг `sh` (из раздела `steps`) запускает команду Python для компиляции вашего приложения и его библиотеки `calc` в файлы байт-кода (каждый с расширением `.pyc`), которые помещаются в рабочую директорию `sources` (внутри директории `/var/jenkins_home/workspace/simple-python-app` в контейнере Jenkins).
-          
-                  stash(name: 'compiled-results', includes: 'sources/*.py*') //Этот шаг `stash` (из раздела basic steps) сохраняет исходный код Python и скомпилированные файлы байт-кода (с расширением `.pyc`) из рабочей директории `sources` для использования на последующих этапах.
-              }
-          }
-          
-          stage('Test') {
-              steps {
-          
-                  sh '''
-                      . venv/bin/activate
-                      py.test --junit-xml test-reports/results.xml sources/test_calc.py
-                      ''' // Этот шаг `sh` (из раздела `steps`) выполняет команду `py.test` из `pytest` для файла `sources/test_calc.py`, которая запускает набор модульных тестов (определенных в `test_calc.py`) для функции `add2` библиотеки "calc" (используемой вашим простым Python-приложением `add2vals`). Опция `--junit-xml test-reports/results.xml` заставляет `py.test` генерировать отчет в формате JUnit XML, который сохраняется в `test-reports/results.xml` (внутри директории `/var/jenkins_home/workspace/simple-python-app` в Jenkins).
-          
-              }
-              post {
-                  always {
-                      junit 'test-reports/results.xml' // Этот шаг `junit` (предоставляемый плагином JUnit) архивирует отчет JUnit XML (сгенерированный командой `py.test` выше) и предоставляет результаты через интерфейс Jenkins. Условие `always` в разделе `post`, содержащее этот шаг `junit`, гарантирует, что шаг всегда выполняется по завершении этапа `Test`, независимо от результата этапа.
-                  }
-              }
-          }
-          
-          stage('Deliver') {
-              steps {
-                  echo "Собираю дистрибутив" // Тут мог бы быть код, который компилировал, переносил файлы в нужное вам место. Но мы этим не будем заниматься.
-              }
-              post {
-                  success {
-                      archiveArtifacts artifacts: '**/*.py' // Этот шаг `archiveArtifacts` (предоставляемый как часть ядра Jenkins) архивирует файлы . Условие `success` в разделе `post`, содержащее этот шаг `archiveArtifacts`, гарантирует, что шаг выполняется по завершении этапа `Deliver` только в том случае, если этот этап завершился успешно.
-          
-                  }
-              }
-          }
+
+    stage('Build') {
+      steps {
+        sh '''
+          set -eu
+          . venv/bin/activate
+          python -m py_compile sources/add2vals.py sources/calc.py
+        '''
+        stash name: 'compiled-results', includes: 'sources/*.py*'
+      }
+    }
+
+    stage('Test') {
+      steps {
+        sh '''
+          set -eu
+          . venv/bin/activate
+          py.test --junit-xml test-reports/results.xml sources/test_calc.py
+        '''
+      }
+      post {
+        always {
+          junit 'test-reports/results.xml'
         }
+        unstable {
+          echo 'Тесты пометили билд как UNSTABLE'
+        }
+      }
     }
+
+    stage('Deliver') {
+      steps {
+        echo 'Собираю дистрибутив'
+      }
+      post {
+        success {
+          archiveArtifacts artifacts: '**/*.py'
+        }
+      }
+    }
+  }
 }
